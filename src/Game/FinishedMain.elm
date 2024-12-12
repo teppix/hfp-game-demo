@@ -131,13 +131,38 @@ updatePlayer key player =
             player
 
 
+invertDirection : Direction -> Direction
+invertDirection direction =
+    case direction of
+    Up ->
+        Down
+
+    Down ->
+        Up
+
+    Left ->
+        Right
+
+    Right ->
+        Left
+        
+
 updateCrates : Player -> List ( Int, Int ) -> List ( Int, Int )
 updateCrates player orbs =
     let
+        orbAvoidPlayer : ( Int, Int ) -> ( Int, Int )
+        orbAvoidPlayer orb = 
+            if orb == move player.direction player.position then
+                orb
+            else
+               orb
+                    |> move (invertDirection player.direction) 
+
         f orb =
             if player.position == orb then
                 move player.direction orb
                     |> constrainToWorld
+                    |> orbAvoidPlayer
 
             else
                 orb
