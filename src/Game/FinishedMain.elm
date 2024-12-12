@@ -137,6 +137,7 @@ updateCrates player orbs =
         f orb =
             if player.position == orb then
                 move player.direction orb
+                    |> constrainToWorld
 
             else
                 orb
