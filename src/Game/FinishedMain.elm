@@ -157,12 +157,21 @@ updateCrates player orbs =
             else
                orb
                     |> move (invertDirection player.direction) 
+        
+        orbAvoidOrbs allOrbs orb = 
+            if List.any (\otherOrb -> otherOrb == orb) allOrbs then
+                orb
+                    |> move (invertDirection player.direction) 
+                    |> move (invertDirection player.direction) 
+            else
+                orb
 
         f orb =
             if player.position == orb then
                 move player.direction orb
                     |> constrainToWorld
                     |> orbAvoidPlayer
+                    |> orbAvoidOrbs orbs
 
             else
                 orb
