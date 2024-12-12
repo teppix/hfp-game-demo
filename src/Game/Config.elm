@@ -8,7 +8,7 @@ tileSize =
 
 scale : number
 scale =
-    4
+    3
 
 
 worldWidth : number
