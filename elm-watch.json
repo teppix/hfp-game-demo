@@ -5,12 +5,6 @@
                 "src/Game/Main.elm"
             ],
             "output": "build/main.js"
-        },
-        "Finished": {
-            "inputs": [
-                "src/Game/FinishedMain.elm"
-            ],
-            "output": "build/finished-main.js"
         }
     }
 }

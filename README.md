@@ -2,9 +2,9 @@
 
 ## Instructions
 
-1. install elm
-2. run `elm reactor`
-3. visit http://localhost:8000/src/Main.elm
+1. install dependencies: `npm i`
+2. run `npm start` to start the watcher
+3. open `index.html` in a browser
 
 ## Assets Sources
 
