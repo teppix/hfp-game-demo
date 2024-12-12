@@ -1,10 +1,10 @@
 module Game.Main exposing (..)
 
 import Browser
-import Html exposing (Html)
 import Game.Config as Config
 import Game.Input as Input
 import Game.Render as Render
+import Html exposing (Html)
 
 
 type Msg
@@ -81,10 +81,10 @@ update msg model =
                 nextPlayer =
                     updatePlayer key model.player
 
-                nextCrates =
-                    updateCrates nextPlayer model.orbs
+                nextOrbs =
+                    updateOrbs nextPlayer model.orbs
             in
-            ( { model | player = nextPlayer, orbs = nextCrates }
+            ( { model | player = nextPlayer, orbs = nextOrbs }
             , Cmd.none
             )
 
@@ -131,8 +131,8 @@ updatePlayer key player =
             player
 
 
-updateCrates : Player -> List ( Int, Int ) -> List ( Int, Int )
-updateCrates player orbs =
+updateOrbs : Player -> List ( Int, Int ) -> List ( Int, Int )
+updateOrbs player orbs =
     let
         f orb =
             if player.position == orb then
