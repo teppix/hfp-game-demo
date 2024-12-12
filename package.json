@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "elm": "^0.19.1-6",
     "elm-watch": "^1.1.3"
   }
 }
