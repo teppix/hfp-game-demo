@@ -20,12 +20,12 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.map KeyWasPressed Input.sub
+    Sub.map KeyPressed Input.sub
 
 
 type Msg
-    = KeyWasPressed Input.Key
-    | GotRandomNumbers (List Int)
+    = KeyPressed Input.Key
+    | RandomNumbers (List Int)
 
 
 type Direction
@@ -54,7 +54,7 @@ init _ =
       , orbs = []
       , randomNumbers = []
       }
-    , Random.generate GotRandomNumbers (Random.list 6 (Random.int 0 14))
+    , Random.generate RandomNumbers (Random.list 6 (Random.int 0 14))
     )
 
 
@@ -65,19 +65,19 @@ init _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        KeyWasPressed key ->
+        KeyPressed key ->
             let
                 nextPlayer =
                     updatePlayer key model.player
 
-                nextCrates =
-                    updateCrates nextPlayer model.orbs
+                nextOrb =
+                    updateOrbs nextPlayer model.orbs
             in
-            ( { model | player = nextPlayer, orbs = nextCrates }
+            ( { model | player = nextPlayer, orbs = nextOrb }
             , Cmd.none
             )
 
-        GotRandomNumbers numbers ->
+        RandomNumbers numbers ->
             ( { model | orbs = toTuples numbers }, Cmd.none )
 
 
@@ -114,8 +114,8 @@ updatePlayer key player =
             player
 
 
-updateCrates : Player -> List ( Int, Int ) -> List ( Int, Int )
-updateCrates player orbs =
+updateOrbs : Player -> List ( Int, Int ) -> List ( Int, Int )
+updateOrbs player orbs =
     let
         orbAvoidPlayer : ( Int, Int ) -> ( Int, Int )
         orbAvoidPlayer orb =
