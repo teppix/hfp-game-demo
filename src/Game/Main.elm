@@ -27,6 +27,8 @@ type Msg
     = KeyPressed Input.Key
     | RandomNumbers (List Int)
 
+type alias Point
+    = ( Int, Int )
 
 type Direction
     = Up
@@ -37,13 +39,13 @@ type Direction
 
 type alias Player =
     { direction : Direction
-    , position : ( Int, Int )
+    , position : Point
     }
 
 
 type alias Model =
     { player : Player
-    , orbs : List ( Int, Int )
+    , orbs : List Point
     , randomNumbers : List Int
     }
 
@@ -114,10 +116,10 @@ updatePlayer key player =
             player
 
 
-updateOrbs : Player -> List ( Int, Int ) -> List ( Int, Int )
+updateOrbs : Player -> List Point -> List Point
 updateOrbs player orbs =
     let
-        orbAvoidPlayer : ( Int, Int ) -> ( Int, Int )
+        orbAvoidPlayer : Point -> Point
         orbAvoidPlayer orb =
             if orb == move player.direction player.position then
                 orb
@@ -148,7 +150,7 @@ updateOrbs player orbs =
     List.map f orbs
 
 
-move : Direction -> ( Int, Int ) -> ( Int, Int )
+move : Direction -> Point -> Point
 move dir ( x, y ) =
     case dir of
         Up ->
@@ -180,7 +182,7 @@ invertDirection direction =
             Left
 
 
-constrainToWorld : ( Int, Int ) -> ( Int, Int )
+constrainToWorld : Point -> Point
 constrainToWorld ( x, y ) =
     ( clamp 0 (Config.worldWidth - 1) x
     , clamp 0 (Config.worldHeight - 1) y
@@ -192,7 +194,7 @@ clamp lower upper val =
     max lower (min upper val)
 
 
-toTuples : List Int -> List ( Int, Int )
+toTuples : List Int -> List Point
 toTuples list =
     case list of
         a :: b :: rest ->
@@ -235,7 +237,7 @@ viewPlayer { direction, position } =
     Render.sprite "./assets/hero1.png" flip offset position
 
 
-viewOrbs : List ( Int, Int ) -> List (Html msg)
+viewOrbs : List Point -> List (Html msg)
 viewOrbs boxes =
     let
         f =
