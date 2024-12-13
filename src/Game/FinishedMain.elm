@@ -1,14 +1,16 @@
 module Game.FinishedMain exposing (..)
 
 import Browser
-import Html exposing (Html)
 import Game.Config as Config
 import Game.Input as Input
 import Game.Render as Render
+import Html exposing (Html)
+import Random
 
 
 type Msg
     = KeyWasPressed Input.Key
+    | GotRandomNumber Int
 
 
 type Direction
@@ -27,6 +29,7 @@ type alias Player =
 type alias Model =
     { player : Player
     , orbs : List ( Int, Int )
+    , randomNumber : Int
     }
 
 
@@ -87,14 +90,17 @@ update msg model =
             ( { model | player = nextPlayer, orbs = nextCrates }
             , Cmd.none
             )
+        GotRandomNumber number ->
+            ( {model | randomNumber = number}, Cmd.none )
 
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
     ( { player = { direction = Up, position = ( 4, 0 ) }
       , orbs = [ ( 6, 3 ), ( 3, 6 ) ]
+      , randomNumber = 0
       }
-    , Cmd.none
+    , Random.generate GotRandomNumber (Random.int 0 15) 
     )
 
 
@@ -134,35 +140,37 @@ updatePlayer key player =
 invertDirection : Direction -> Direction
 invertDirection direction =
     case direction of
-    Up ->
-        Down
+        Up ->
+            Down
 
-    Down ->
-        Up
+        Down ->
+            Up
 
-    Left ->
-        Right
+        Left ->
+            Right
 
-    Right ->
-        Left
-        
+        Right ->
+            Left
+
 
 updateCrates : Player -> List ( Int, Int ) -> List ( Int, Int )
 updateCrates player orbs =
     let
         orbAvoidPlayer : ( Int, Int ) -> ( Int, Int )
-        orbAvoidPlayer orb = 
+        orbAvoidPlayer orb =
             if orb == move player.direction player.position then
                 orb
+
             else
-               orb
-                    |> move (invertDirection player.direction) 
-        
-        orbAvoidOrbs allOrbs orb = 
+                orb
+                    |> move (invertDirection player.direction)
+
+        orbAvoidOrbs allOrbs orb =
             if List.any (\otherOrb -> otherOrb == orb) allOrbs then
                 orb
-                    |> move (invertDirection player.direction) 
-                    |> move (invertDirection player.direction) 
+                    |> move (invertDirection player.direction)
+                    |> move (invertDirection player.direction)
+
             else
                 orb
 
