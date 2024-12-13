@@ -1,5 +1,7 @@
 body:has(> * > .world) {
     background: #553333;
+    height: 100%;
+    overflow: hidden;
 }
 
 .world {

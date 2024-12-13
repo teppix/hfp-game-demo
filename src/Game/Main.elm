@@ -1,33 +1,11 @@
-module Game.Main exposing (..)
+module Game.Main exposing (main)
 
 import Browser
 import Game.Config as Config
 import Game.Input as Input
 import Game.Render as Render
 import Html exposing (Html)
-
-
-type Msg
-    = KeyWasPressed Input.Key
-
-
-type Direction
-    = Up
-    | Down
-    | Left
-    | Right
-
-
-type alias Player =
-    { direction : Direction
-    , position : ( Int, Int )
-    }
-
-
-type alias Model =
-    { player : Player
-    , orbs : List ( Int, Int )
-    }
+import Random
 
 
 main : Program () Model Msg
@@ -42,60 +20,70 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.map KeyWasPressed Input.sub
+    Sub.map KeyPressed Input.sub
 
 
-move : Direction -> ( Int, Int ) -> ( Int, Int )
-move dir ( x, y ) =
-    case dir of
-        Up ->
-            ( x, y + 1 )
-
-        Down ->
-            ( x, y - 1 )
-
-        Left ->
-            ( x - 1, y )
-
-        Right ->
-            ( x + 1, y )
+type Msg
+    = KeyPressed Input.Key
+    | RandomNumbers (List Int)
 
 
-clamp : comparable -> comparable -> comparable -> comparable
-clamp lower upper val =
-    max lower (min upper val)
+type alias Point =
+    ( Int, Int )
 
 
-constrainToWorld : ( Int, Int ) -> ( Int, Int )
-constrainToWorld ( x, y ) =
-    ( clamp 0 (Config.worldWidth - 1) x
-    , clamp 0 (Config.worldHeight - 1) y
-    )
+type Direction
+    = Up
+    | Down
+    | Left
+    | Right
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        KeyWasPressed key ->
-            let
-                nextPlayer =
-                    updatePlayer key model.player
+type alias Player =
+    { direction : Direction
+    , position : Point
+    }
 
-                nextOrbs =
-                    updateOrbs nextPlayer model.orbs
-            in
-            ( { model | player = nextPlayer, orbs = nextOrbs }
-            , Cmd.none
-            )
+
+type alias Model =
+    { player : Player
+    , orbs : List Point
+    , randomNumbers : List Int
+    }
 
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
     ( { player = { direction = Up, position = ( 4, 0 ) }
-      , orbs = [ ( 6, 3 ), ( 3, 6 ) ]
+      , orbs = []
+      , randomNumbers = []
       }
-    , Cmd.none
+      -- ! Makes the assumption that world width and height are the same
+    , Random.generate RandomNumbers (Random.list (2 * Config.numberOfOrbs) (Random.int 0 (Config.worldWidth - 1)))
     )
+
+
+
+-- UPDATE
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        KeyPressed key ->
+            let
+                nextPlayer =
+                    updatePlayer key model.player
+
+                nextOrb =
+                    updateOrbs nextPlayer model.orbs
+            in
+            ( { model | player = nextPlayer, orbs = nextOrb }
+            , Cmd.none
+            )
+
+        RandomNumbers numbers ->
+            ( { model | orbs = toTuples numbers }, Cmd.none )
 
 
 updatePlayer : Input.Key -> Player -> Player
@@ -131,17 +119,96 @@ updatePlayer key player =
             player
 
 
-updateOrbs : Player -> List ( Int, Int ) -> List ( Int, Int )
+updateOrbs : Player -> List Point -> List Point
 updateOrbs player orbs =
     let
+        orbAvoidPlayer : Point -> Point
+        orbAvoidPlayer orb =
+            if orb == move player.direction player.position then
+                orb
+
+            else
+                orb
+                    |> move (invertDirection player.direction)
+
+        orbAvoidOrbs allOrbs orb =
+            if List.any (\otherOrb -> otherOrb == orb) allOrbs then
+                orb
+                    |> move (invertDirection player.direction)
+                    |> move (invertDirection player.direction)
+
+            else
+                orb
+
         f orb =
             if player.position == orb then
                 move player.direction orb
+                    |> constrainToWorld
+                    |> orbAvoidPlayer
+                    |> orbAvoidOrbs orbs
 
             else
                 orb
     in
     List.map f orbs
+
+
+move : Direction -> Point -> Point
+move dir ( x, y ) =
+    case dir of
+        Up ->
+            ( x, y + 1 )
+
+        Down ->
+            ( x, y - 1 )
+
+        Left ->
+            ( x - 1, y )
+
+        Right ->
+            ( x + 1, y )
+
+
+invertDirection : Direction -> Direction
+invertDirection direction =
+    case direction of
+        Up ->
+            Down
+
+        Down ->
+            Up
+
+        Left ->
+            Right
+
+        Right ->
+            Left
+
+
+constrainToWorld : Point -> Point
+constrainToWorld ( x, y ) =
+    ( clamp 0 (Config.worldWidth - 1) x
+    , clamp 0 (Config.worldHeight - 1) y
+    )
+
+
+clamp : comparable -> comparable -> comparable -> comparable
+clamp lower upper val =
+    max lower (min upper val)
+
+
+toTuples : List Int -> List Point
+toTuples list =
+    case list of
+        a :: b :: rest ->
+            ( a, b ) :: toTuples rest
+
+        _ ->
+            []
+
+
+
+-- VIEW
 
 
 view : Model -> Html Msg
@@ -173,7 +240,7 @@ viewPlayer { direction, position } =
     Render.sprite "./assets/hero1.png" flip offset position
 
 
-viewOrbs : List ( Int, Int ) -> List (Html msg)
+viewOrbs : List Point -> List (Html msg)
 viewOrbs boxes =
     let
         f =
