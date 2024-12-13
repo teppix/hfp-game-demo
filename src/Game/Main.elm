@@ -27,8 +27,10 @@ type Msg
     = KeyPressed Input.Key
     | RandomNumbers (List Int)
 
-type alias Point
-    = ( Int, Int )
+
+type alias Point =
+    ( Int, Int )
+
 
 type Direction
     = Up
@@ -56,7 +58,8 @@ init _ =
       , orbs = []
       , randomNumbers = []
       }
-    , Random.generate RandomNumbers (Random.list 6 (Random.int 0 14))
+      -- ! Makes the assumption that world width and height are the same
+    , Random.generate RandomNumbers (Random.list (2 * Config.numberOfOrbs) (Random.int 0 (Config.worldWidth - 1)))
     )
 
 
