@@ -10,7 +10,7 @@ import Random
 
 type Msg
     = KeyWasPressed Input.Key
-    | GotRandomNumber Int
+    | GotRandomNumbers ( Int, Int )
 
 
 type Direction
@@ -29,7 +29,7 @@ type alias Player =
 type alias Model =
     { player : Player
     , orbs : List ( Int, Int )
-    , randomNumber : Int
+    , randomNumbers : List Int
     }
 
 
@@ -90,18 +90,17 @@ update msg model =
             ( { model | player = nextPlayer, orbs = nextCrates }
             , Cmd.none
             )
-        GotRandomNumber number ->
-            ( {model | randomNumber = number}, Cmd.none )
+        GotRandomNumbers (number1, number2) ->
+            ( {model | randomNumbers = [number1, number2] }, Cmd.none )
 
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
     ( { player = { direction = Up, position = ( 4, 0 ) }
       , orbs = [ ( 6, 3 ), ( 3, 6 ) ]
-      , randomNumber = 0
+      , randomNumbers = []
       }
-    , Random.generate GotRandomNumber (Random.int 0 15) 
-    )
+    , Random.generate GotRandomNumbers (Random.pair (Random.int 1 100) (Random.int 1 100))    )
 
 
 updatePlayer : Input.Key -> Player -> Player
