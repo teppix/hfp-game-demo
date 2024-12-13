@@ -8,6 +8,21 @@ import Html exposing (Html)
 import Random
 
 
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.map KeyWasPressed Input.sub
+
+
 type Msg
     = KeyWasPressed Input.Key
     | GotRandomNumbers (List Int)
@@ -33,47 +48,18 @@ type alias Model =
     }
 
 
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
-
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.map KeyWasPressed Input.sub
-
-
-move : Direction -> ( Int, Int ) -> ( Int, Int )
-move dir ( x, y ) =
-    case dir of
-        Up ->
-            ( x, y + 1 )
-
-        Down ->
-            ( x, y - 1 )
-
-        Left ->
-            ( x - 1, y )
-
-        Right ->
-            ( x + 1, y )
-
-
-clamp : comparable -> comparable -> comparable -> comparable
-clamp lower upper val =
-    max lower (min upper val)
-
-
-constrainToWorld : ( Int, Int ) -> ( Int, Int )
-constrainToWorld ( x, y ) =
-    ( clamp 0 (Config.worldWidth - 1) x
-    , clamp 0 (Config.worldHeight - 1) y
+init : flags -> ( Model, Cmd Msg )
+init _ =
+    ( { player = { direction = Up, position = ( 4, 0 ) }
+      , orbs = []
+      , randomNumbers = []
+      }
+    , Random.generate GotRandomNumbers (Random.list 6 (Random.int 0 14))
     )
+
+
+
+-- UPDATE
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -93,26 +79,6 @@ update msg model =
 
         GotRandomNumbers numbers ->
             ( { model | orbs = toTuples numbers }, Cmd.none )
-
-
-toTuples : List Int -> List ( Int, Int )
-toTuples list =
-    case list of
-        a :: b :: rest ->
-            ( a, b ) :: toTuples rest
-
-        _ ->
-            []
-
-
-init : flags -> ( Model, Cmd Msg )
-init _ =
-    ( { player = { direction = Up, position = ( 4, 0 ) }
-      , orbs = []
-      , randomNumbers = []
-      }
-    , Random.generate GotRandomNumbers (Random.list 6 (Random.int 0 14))
-    )
 
 
 updatePlayer : Input.Key -> Player -> Player
@@ -148,22 +114,6 @@ updatePlayer key player =
             player
 
 
-invertDirection : Direction -> Direction
-invertDirection direction =
-    case direction of
-        Up ->
-            Down
-
-        Down ->
-            Up
-
-        Left ->
-            Right
-
-        Right ->
-            Left
-
-
 updateCrates : Player -> List ( Int, Int ) -> List ( Int, Int )
 updateCrates player orbs =
     let
@@ -196,6 +146,64 @@ updateCrates player orbs =
                 orb
     in
     List.map f orbs
+
+
+move : Direction -> ( Int, Int ) -> ( Int, Int )
+move dir ( x, y ) =
+    case dir of
+        Up ->
+            ( x, y + 1 )
+
+        Down ->
+            ( x, y - 1 )
+
+        Left ->
+            ( x - 1, y )
+
+        Right ->
+            ( x + 1, y )
+
+
+invertDirection : Direction -> Direction
+invertDirection direction =
+    case direction of
+        Up ->
+            Down
+
+        Down ->
+            Up
+
+        Left ->
+            Right
+
+        Right ->
+            Left
+
+
+constrainToWorld : ( Int, Int ) -> ( Int, Int )
+constrainToWorld ( x, y ) =
+    ( clamp 0 (Config.worldWidth - 1) x
+    , clamp 0 (Config.worldHeight - 1) y
+    )
+
+
+clamp : comparable -> comparable -> comparable -> comparable
+clamp lower upper val =
+    max lower (min upper val)
+
+
+toTuples : List Int -> List ( Int, Int )
+toTuples list =
+    case list of
+        a :: b :: rest ->
+            ( a, b ) :: toTuples rest
+
+        _ ->
+            []
+
+
+
+-- VIEW
 
 
 view : Model -> Html Msg
