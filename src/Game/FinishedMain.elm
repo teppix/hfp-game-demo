@@ -10,7 +10,7 @@ import Random
 
 type Msg
     = KeyWasPressed Input.Key
-    | GotRandomNumbers ( List Int )
+    | GotRandomNumbers (List Int)
 
 
 type Direction
@@ -90,17 +90,29 @@ update msg model =
             ( { model | player = nextPlayer, orbs = nextCrates }
             , Cmd.none
             )
+
         GotRandomNumbers numbers ->
-            ( {model | randomNumbers = numbers }, Cmd.none )
+            ( { model | orbs = toTuples numbers }, Cmd.none )
+
+
+toTuples : List Int -> List ( Int, Int )
+toTuples list =
+    case list of
+        a :: b :: rest ->
+            ( a, b ) :: toTuples rest
+
+        _ ->
+            []
 
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
     ( { player = { direction = Up, position = ( 4, 0 ) }
-      , orbs = [ ( 6, 3 ), ( 3, 6 ) ]
+      , orbs = []
       , randomNumbers = []
       }
-    , Random.generate GotRandomNumbers (Random.list 5 (Random.int 1 100))     )
+    , Random.generate GotRandomNumbers (Random.list 6 (Random.int 0 14))
+    )
 
 
 updatePlayer : Input.Key -> Player -> Player
