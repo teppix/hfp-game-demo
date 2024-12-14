@@ -1,10 +1,13 @@
-# A simple game example in Elm
+# Orb hunter
 
-## Instructions
+![Screenshot of the game](<docs/assets/Screenshot 2024-12-14 at 16-19-00 A simple game.png>)
 
-1. install dependencies: `npm i`
-2. run `npm start` to start the watcher
-3. open `index.html` in a browser
+## Getting started
+
+1. Install dependencies: `npm i`.
+2. Run `npm start` to start elm watch.
+3. Open `index.html` in a browser.
+	- For example with vscode live server. 
 
 ## Assets Sources
 
