@@ -1,31 +1,35 @@
 body:has(> * > .world) {
-    background: #553333;
-    height: 100%;
-    overflow: hidden;
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+		url('assets/cobblestone.png');
+	background-size: cover;
+	background-position: center;
+	background-size: 3%;
+	height: 100%;
+	overflow: hidden;
 }
 
 .world {
-    background: #ccbbaa;
-    position: absolute;
+    background: #161616;
+	position: absolute;
 
-    top: 50vh;
-    left: 50vw;
+	top: 50vh;
+	left: 50vw;
 
-    width: calc(var(--tile-size) * var(--world-height));
-    height: calc(var(--tile-size) * var(--world-height));
+	width: calc(var(--tile-size) * var(--world-height));
+	height: calc(var(--tile-size) * var(--world-height));
 
-    border: 1px solid black;
-    position: relative;
-    transform-origin: top left;
-    transform: scale(var(--scale)) translate(-50%, -50%);
-    image-rendering: pixelated;
+	border: 1px solid black;
+	position: relative;
+	transform-origin: top left;
+	transform: scale(var(--scale)) translate(-50%, -50%);
+	image-rendering: pixelated;
 }
 
 .sprite {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: var(--tile-size);
-    height: var(--tile-size);
-    transform-origin: 50% 50%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: var(--tile-size);
+	height: var(--tile-size);
+	transform-origin: 50% 50%;
 }
