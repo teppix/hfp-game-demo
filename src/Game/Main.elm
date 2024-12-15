@@ -134,8 +134,8 @@ updateOrbs player orbs =
                 orb
                     |> move (invertDirection player.direction)
 
-        orbAvoidOrbs allOrbs orb =
-            if List.any (\otherOrb -> otherOrb == orb) allOrbs then
+        orbAvoidOrbs orb =
+            if List.any (\otherOrb -> otherOrb == orb) orbs then
                 orb
                     |> move (invertDirection player.direction)
                     |> move (invertDirection player.direction)
@@ -148,7 +148,7 @@ updateOrbs player orbs =
                 move player.direction orb
                     |> constrainToWorld
                     |> orbAvoidPlayer
-                    |> orbAvoidOrbs orbs
+                    |> orbAvoidOrbs
 
             else
                 orb
