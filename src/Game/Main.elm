@@ -25,7 +25,7 @@ subscriptions _ =
 
 type Msg
     = KeyPressed Engine.InputKey
-    | RandomNumbers (List Int)
+    | OrbRandomPositionGeneration (List Point)
 
 
 type alias Point =
@@ -48,7 +48,6 @@ type alias Player =
 type alias Model =
     { player : Player
     , orbs : List Point
-    , randomNumbers : List Int
     }
 
 
@@ -56,11 +55,15 @@ init : flags -> ( Model, Cmd Msg )
 init _ =
     ( { player = { direction = Up, position = ( 4, 0 ) }
       , orbs = []
-      , randomNumbers = []
       }
-      -- ! Makes the assumption that world width and height are the same
-    , Random.generate RandomNumbers (Random.list (2 * Config.numberOfOrbs) (Random.int 0 (Config.worldWidth - 1)))
+    , Random.generate OrbRandomPositionGeneration generateRandomOrbPositions
     )
+
+
+generateRandomOrbPositions : Random.Generator (List Point)
+generateRandomOrbPositions =
+    -- ! Makes the assumption that world width and height are the same
+    Random.map toPoints (Random.list (2 * Config.numberOfOrbs) (Random.int 0 (Config.worldWidth - 1)))
 
 
 
@@ -82,8 +85,8 @@ update msg model =
             , Cmd.none
             )
 
-        RandomNumbers numbers ->
-            ( { model | orbs = toTuples numbers }, Cmd.none )
+        OrbRandomPositionGeneration points ->
+            ( { model | orbs = points }, Cmd.none )
 
 
 updatePlayer : Engine.InputKey -> Player -> Player
@@ -197,11 +200,11 @@ clamp lower upper val =
     max lower (min upper val)
 
 
-toTuples : List Int -> List Point
-toTuples list =
+toPoints : List Int -> List Point
+toPoints list =
     case list of
         a :: b :: rest ->
-            ( a, b ) :: toTuples rest
+            ( a, b ) :: toPoints rest
 
         _ ->
             []
