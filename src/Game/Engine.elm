@@ -1,4 +1,4 @@
-module Game.Engine exposing (Key(..), renderSprite, keyDecoder , renderWorld)
+module Game.Engine exposing (InputKey(..), keyDecoder, renderSprite, renderWorld)
 
 import Game.Config as Config
 import Html exposing (Html)
@@ -7,16 +7,19 @@ import Json.Decode as Decode
 import String.Interpolate exposing (interpolate)
 
 
-type Key
+
+-- Input
+
+
+type InputKey
     = ArrowUp
     | ArrowDown
     | ArrowLeft
     | ArrowRight
     | Ignored String
 
- 
 
-keyDecoder : Decode.Decoder Key
+keyDecoder : Decode.Decoder InputKey
 keyDecoder =
     let
         fromKey keyCode =
@@ -37,6 +40,10 @@ keyDecoder =
                     Ignored keyCode
     in
     Decode.field "key" Decode.string |> Decode.map fromKey
+
+
+
+-- Rendering
 
 
 transform : List String -> Html.Attribute msg

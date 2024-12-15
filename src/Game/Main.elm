@@ -24,7 +24,7 @@ subscriptions _ =
 
 
 type Msg
-    = KeyPressed Engine.Key
+    = KeyPressed Engine.InputKey
     | RandomNumbers (List Int)
 
 
@@ -86,7 +86,7 @@ update msg model =
             ( { model | orbs = toTuples numbers }, Cmd.none )
 
 
-updatePlayer : Engine.Key -> Player -> Player
+updatePlayer : Engine.InputKey -> Player -> Player
 updatePlayer key player =
     let
         direction =
