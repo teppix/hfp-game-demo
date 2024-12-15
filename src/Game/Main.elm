@@ -131,14 +131,11 @@ updateOrbs player orbs =
                 orb
 
             else
-                orb
-                    |> move (invertDirection player.direction)
+                move (invertDirection player.direction) orb
 
         orbAvoidOrbs orb =
             if List.any (\otherOrb -> otherOrb == orb) orbs then
-                orb
-                    |> move (invertDirection player.direction)
-                    |> move (invertDirection player.direction)
+                moveTwice (invertDirection player.direction) orb
 
             else
                 orb
@@ -171,6 +168,9 @@ move dir ( x, y ) =
         Right ->
             ( x + 1, y )
 
+moveTwice : Direction -> Point -> Point
+moveTwice dir point =
+    move dir (move dir point)
 
 invertDirection : Direction -> Direction
 invertDirection direction =
