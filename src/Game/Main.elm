@@ -2,8 +2,7 @@ module Game.Main exposing (main)
 
 import Browser
 import Game.Config as Config
-import Game.Input as Input
-import Game.Render as Render
+import Game.Engine as Engine
 import Html exposing (Html)
 import Random
 
@@ -20,11 +19,11 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.map KeyPressed Input.sub
+    Sub.map KeyPressed Engine.sub
 
 
 type Msg
-    = KeyPressed Input.Key
+    = KeyPressed Engine.Key
     | RandomNumbers (List Int)
 
 
@@ -86,24 +85,24 @@ update msg model =
             ( { model | orbs = toTuples numbers }, Cmd.none )
 
 
-updatePlayer : Input.Key -> Player -> Player
+updatePlayer : Engine.Key -> Player -> Player
 updatePlayer key player =
     let
         direction =
             case key of
-                Input.ArrowUp ->
+                Engine.ArrowUp ->
                     Just Up
 
-                Input.ArrowDown ->
+                Engine.ArrowDown ->
                     Just Down
 
-                Input.ArrowLeft ->
+                Engine.ArrowLeft ->
                     Just Left
 
-                Input.ArrowRight ->
+                Engine.ArrowRight ->
                     Just Right
 
-                Input.Ignored _ ->
+                Engine.Ignored _ ->
                     Nothing
     in
     case direction of
@@ -213,7 +212,7 @@ toTuples list =
 
 view : Model -> Html Msg
 view model =
-    Render.world <|
+    Engine.world <|
         List.concat
             [ [ viewPlayer model.player ]
             , viewOrbs model.orbs
@@ -237,13 +236,13 @@ viewPlayer { direction, position } =
                 Right ->
                     ( ( 0, 1 ), False )
     in
-    Render.sprite "./assets/hero1.png" flip offset position
+    Engine.sprite "./assets/hero1.png" flip offset position
 
 
 viewOrbs : List Point -> List (Html msg)
 viewOrbs boxes =
     let
         f =
-            Render.sprite "./assets/orb.png" False ( 0, 0 )
+            Engine.sprite "./assets/orb.png" False ( 0, 0 )
     in
     List.map f boxes

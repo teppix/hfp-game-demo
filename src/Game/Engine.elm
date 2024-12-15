@@ -1,9 +1,47 @@
-module Game.Render exposing (sprite, world)
+module Game.Engine exposing (Key(..), sprite, sub, world)
 
+import Browser.Events
 import Game.Config as Config
 import Html exposing (Html)
 import Html.Attributes exposing (attribute, class, style)
+import Json.Decode as Decode
 import String.Interpolate exposing (interpolate)
+
+
+type Key
+    = ArrowUp
+    | ArrowDown
+    | ArrowLeft
+    | ArrowRight
+    | Ignored String
+
+
+sub : Sub Key
+sub =
+    Browser.Events.onKeyDown keyDecoder
+
+
+keyDecoder : Decode.Decoder Key
+keyDecoder =
+    let
+        fromKey keyCode =
+            case keyCode of
+                "ArrowUp" ->
+                    ArrowUp
+
+                "ArrowDown" ->
+                    ArrowDown
+
+                "ArrowLeft" ->
+                    ArrowLeft
+
+                "ArrowRight" ->
+                    ArrowRight
+
+                _ ->
+                    Ignored keyCode
+    in
+    Decode.field "key" Decode.string |> Decode.map fromKey
 
 
 transform : List String -> Html.Attribute msg
