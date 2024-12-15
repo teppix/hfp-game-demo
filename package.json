@@ -1,7 +1,7 @@
 {
-  "name": "reference",
+  "name": "orb-hunter",
   "version": "1.0.0",
-  "description": "## Instructions",
+  "description": " Continued development of a game demo for a live coding session at Halmstad Functional Programming Meetup.",
   "main": "index.js",
   "scripts": {
     "start": "elm-watch hot",
@@ -10,6 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "private": true,
   "devDependencies": {
     "elm": "^0.19.1-6",
     "elm-watch": "^1.1.3"
