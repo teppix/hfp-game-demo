@@ -1,6 +1,5 @@
-module Game.Engine exposing (Key(..), renderSprite, sub, renderWorld)
+module Game.Engine exposing (Key(..), renderSprite, keyDecoder , renderWorld)
 
-import Browser.Events
 import Game.Config as Config
 import Html exposing (Html)
 import Html.Attributes exposing (attribute, class, style)
@@ -15,11 +14,7 @@ type Key
     | ArrowRight
     | Ignored String
 
-
-sub : Sub Key
-sub =
-    Browser.Events.onKeyDown keyDecoder
-
+ 
 
 keyDecoder : Decode.Decoder Key
 keyDecoder =

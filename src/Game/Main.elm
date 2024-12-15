@@ -1,6 +1,7 @@
 module Game.Main exposing (main)
 
 import Browser
+import Browser.Events
 import Game.Config as Config
 import Game.Engine as Engine
 import Html exposing (Html)
@@ -19,7 +20,7 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.map KeyPressed Engine.sub
+    Sub.map KeyPressed <| Browser.Events.onKeyDown Engine.keyDecoder
 
 
 type Msg
