@@ -2,6 +2,10 @@
 
 Continued development of a game demo for a live coding session at Halmstad Functional Programming Meetup.
 
+Try it out here: https://teppix.github.io/hfp-game-demo/
+
+# Screenshots
+
 ![Screenshot of the game](<docs/assets/Screenshot 2024-12-15 at 08-24-54 A simple game.png>)
 
 ## Getting started
