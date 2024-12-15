@@ -2,7 +2,7 @@
   "targets": {
     "Game": {
       "inputs": ["src/Game/Main.elm"],
-      "output": "build/main.js"
+      "output": "./dist/elm.js"
     }
   }
 }
