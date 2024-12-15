@@ -5,12 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "elm-watch hot",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "elm-watch make",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "biome format --write",
+    "check-format": "biome format"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "elm": "^0.19.1-6",
     "elm-watch": "^1.1.3"
   }
