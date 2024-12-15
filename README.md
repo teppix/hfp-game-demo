@@ -25,6 +25,10 @@ Continued development of a game demo for a live coding session at Halmstad Funct
     - Replace orbs with apples
     - Be able to take out sword and slash apples
   - https://pixelfrog-assets.itch.io/tiny-swords
+- 
+- Introduce scrolling for a bigger world. 
+- Seamless movement instead of tile-based movement (may be too big for this project)
+- Replace rendering to WebGL.
 
 ## To do
 
