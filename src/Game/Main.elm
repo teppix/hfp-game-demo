@@ -212,7 +212,7 @@ toTuples list =
 
 view : Model -> Html Msg
 view model =
-    Engine.world <|
+    Engine.renderWorld <|
         List.concat
             [ [ viewPlayer model.player ]
             , viewOrbs model.orbs
@@ -236,13 +236,13 @@ viewPlayer { direction, position } =
                 Right ->
                     ( ( 0, 1 ), False )
     in
-    Engine.sprite "./assets/hero1.png" flip offset position
+    Engine.renderSprite "./assets/hero1.png" flip offset position
 
 
 viewOrbs : List Point -> List (Html msg)
 viewOrbs boxes =
     let
         f =
-            Engine.sprite "./assets/orb.png" False ( 0, 0 )
+            Engine.renderSprite "./assets/orb.png" False ( 0, 0 )
     in
     List.map f boxes

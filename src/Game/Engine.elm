@@ -1,4 +1,4 @@
-module Game.Engine exposing (Key(..), sprite, sub, world)
+module Game.Engine exposing (Key(..), renderSprite, sub, renderWorld)
 
 import Browser.Events
 import Game.Config as Config
@@ -54,8 +54,8 @@ translate xstr ystr =
     "translate(" ++ xstr ++ "," ++ ystr ++ ")"
 
 
-world : List (Html msg) -> Html msg
-world contents =
+renderWorld : List (Html msg) -> Html msg
+renderWorld contents =
     Html.div
         [ attribute "style" <|
             interpolate
@@ -69,8 +69,8 @@ world contents =
         [ Html.div [ class "world" ] contents ]
 
 
-sprite : String -> Bool -> ( Int, Int ) -> ( Int, Int ) -> Html msg
-sprite imageSrc flip tileOffset worldPosition =
+renderSprite : String -> Bool -> ( Int, Int ) -> ( Int, Int ) -> Html msg
+renderSprite imageSrc flip tileOffset worldPosition =
     let
         ( ox, oy ) =
             tileOffset
