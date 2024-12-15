@@ -1,6 +1,8 @@
 # Orb hunter
 
-![Screenshot of the game](<docs/assets/Screenshot 2024-12-14 at 16-19-00 A simple game.png>)
+ Continued development of a game demo for a live coding session at Halmstad Functional Programming Meetup.
+
+![Screenshot of the game](<docs/assets/Screenshot 2024-12-15 at 08-24-54 A simple game.png>)
 
 ## Getting started
 
