@@ -1,9 +1,49 @@
-module Game.Render exposing (sprite, world)
+module Game.Engine exposing (InputKey(..), keyDecoder, renderSprite, renderWorld)
 
 import Game.Config as Config
 import Html exposing (Html)
 import Html.Attributes exposing (attribute, class, style)
+import Json.Decode as Decode
 import String.Interpolate exposing (interpolate)
+
+
+
+-- Input
+
+
+type InputKey
+    = ArrowUp
+    | ArrowDown
+    | ArrowLeft
+    | ArrowRight
+    | Ignored String
+
+
+keyDecoder : Decode.Decoder InputKey
+keyDecoder =
+    let
+        fromKey keyCode =
+            case keyCode of
+                "ArrowUp" ->
+                    ArrowUp
+
+                "ArrowDown" ->
+                    ArrowDown
+
+                "ArrowLeft" ->
+                    ArrowLeft
+
+                "ArrowRight" ->
+                    ArrowRight
+
+                _ ->
+                    Ignored keyCode
+    in
+    Decode.field "key" Decode.string |> Decode.map fromKey
+
+
+
+-- Rendering
 
 
 transform : List String -> Html.Attribute msg
@@ -16,8 +56,8 @@ translate xstr ystr =
     "translate(" ++ xstr ++ "," ++ ystr ++ ")"
 
 
-world : List (Html msg) -> Html msg
-world contents =
+renderWorld : List (Html msg) -> Html msg
+renderWorld contents =
     Html.div
         [ attribute "style" <|
             interpolate
@@ -31,8 +71,8 @@ world contents =
         [ Html.div [ class "world" ] contents ]
 
 
-sprite : String -> Bool -> ( Int, Int ) -> ( Int, Int ) -> Html msg
-sprite imageSrc flip tileOffset worldPosition =
+renderSprite : String -> Bool -> ( Int, Int ) -> ( Int, Int ) -> Html msg
+renderSprite imageSrc flip tileOffset worldPosition =
     let
         ( ox, oy ) =
             tileOffset

@@ -19,3 +19,8 @@ worldWidth =
 worldHeight : number
 worldHeight =
     15
+
+
+numberOfOrbs : number
+numberOfOrbs =
+    5
